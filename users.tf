@@ -7,6 +7,21 @@ resource "aws_iam_user" "users" {
   name     = each.value
 }
 
-output "users" {
-  value = local.users_from_yaml
+resource "aws_iam_user_login_profile" "users" {
+  for_each        = aws_iam_user.users
+  user            = each.value.name
+  password_length = 8
+
+  lifecycle {
+    ignore_changes = [
+      password_length,
+      password_reset_required,
+      pgp_key
+    ]
+  }
+}
+
+output "passwords" {
+  sensitive = true
+  value     = { for user, user_login in aws_iam_user_login_profile.users : user => user_login.password }
 }
