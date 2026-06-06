@@ -1,3 +1,4 @@
+iam_users.csv
 # Local Terraform directories
 .terraform/
 **/.terraform/*
